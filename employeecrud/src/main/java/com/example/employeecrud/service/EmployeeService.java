@@ -6,6 +6,7 @@ import com.example.employeecrud.dto.EmployeeResponse;
 import com.example.employeecrud.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class EmployeeService {
         this.employeeDao = employeeDao;
     }
 
+    @Transactional
     public EmployeeResponse saveEmployee(EmployeeCreateRequest request) {
         Employee employee = new Employee();
         employee.setFirstName(request.getFirstName());
@@ -28,18 +30,22 @@ public class EmployeeService {
         return mapToEmployeeResponse(employee);
     }
 
+    @Transactional(readOnly = true)
     public EmployeeResponse getEmployeeById(int id) {
         return mapToEmployeeResponse(employeeDao.getEmployeeById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<Employee> getAllEmployees() {
         return employeeDao.getAllEmployees();
     }
 
+    @Transactional
     public void updateEmployee(Employee employee) {
         employeeDao.updateEmployee(employee);
     }
 
+    @Transactional
     public void deleteEmployee(int id) {
         employeeDao.deleteEmployee(id);
     }
