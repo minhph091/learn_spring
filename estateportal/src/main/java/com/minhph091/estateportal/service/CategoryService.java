@@ -3,7 +3,11 @@ package com.minhph091.estateportal.service;
 import com.minhph091.estateportal.dao.CategoryDao;
 import com.minhph091.estateportal.dto.CategoryRequest;
 import com.minhph091.estateportal.dto.CategoryResponse;
+import com.minhph091.estateportal.dto.UpdateCategoryRequest;
 import com.minhph091.estateportal.entity.Category;
+import com.minhph091.estateportal.exception.DuplicateResourceException;
+import com.minhph091.estateportal.exception.ResourceNotFoundException;
+import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,15 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
+    public CategoryResponse getCategoryById(int id) {
+        Category category = categoryDao.findCategoryById(id);
+        if (category == null) {
+            throw new ResourceNotFoundException("Không tìm thấy category với id: " + id);
+        }
+        return mapToResponse(category);
+    }
+
+    @Transactional(readOnly = true)
     public List<CategoryResponse> getAllCategories() {
         List<Category> categories = categoryDao.getCategories();
         List<CategoryResponse> categoryRequestList = new ArrayList<>();
@@ -32,8 +45,33 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponse addCategory(CategoryRequest categoryRequest) {
+        if (categoryDao.existCategory(categoryRequest.getName())) {
+            throw new DuplicateResourceException("Category với tên: " + categoryRequest.getName() + " đã tồn tại.");
+        }
         Category category = categoryDao.addCategory(mapToEntity(categoryRequest));
         return mapToResponse(category);
+    }
+
+    @Transactional
+    public void deleteCategory(int id) {
+        Category category = categoryDao.findCategoryById(id);
+        if (category == null) {
+            throw new ResourceNotFoundException("Không tìm thấy id :" + id);
+        }
+        categoryDao.deleteCategory(category);
+    }
+
+    @Transactional
+    public CategoryResponse updateCategory(UpdateCategoryRequest request) {
+
+        Category category = categoryDao.findCategoryById(request.getId());
+        if (category == null) throw new ResourceNotFoundException("Không tìm thấy ID: " + request.getId());
+        category.setName(request.getName());
+        category = categoryDao.updateCategory(category);
+        CategoryResponse response = new CategoryResponse();
+        response.setId(category.getCategoryID());
+        response.setName(category.getName());
+        return response;
     }
 
     public Category mapToEntity(CategoryRequest categoryRequest) {

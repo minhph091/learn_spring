@@ -11,7 +11,9 @@ public interface CategoryDao {
 
     Category findCategoryById(int id);
 
-    void updateCategory(Category category);
+    Category updateCategory(Category category);
 
-    void deleteCategory(int id);
+    void deleteCategory(Category category);
+
+    boolean existCategory(String name);
 }

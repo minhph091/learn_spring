@@ -33,15 +33,19 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public void updateCategory(Category category) {
-        entityManager.merge(category);
+    public Category updateCategory(Category category) {
+        return entityManager.merge(category);
     }
 
     @Override
-    public void deleteCategory(int id) {
-        Category category = entityManager.find(Category.class, id);
-        if (category != null) {
-            entityManager.remove(category);
-        }
+    public void deleteCategory(Category category) {
+        entityManager.remove(category);
+    }
+
+    @Override
+    public boolean existCategory(String name) {
+        Category category = entityManager.createQuery("SELECT e FROM Category e where e.name = :name", Category.class).
+                setParameter("name", name).getSingleResult();
+        return category != null;
     }
 }
