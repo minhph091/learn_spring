@@ -1,11 +1,12 @@
 package com.minhph091.estateportal.controller;
 
-import com.minhph091.estateportal.dto.CategoryDTO;
+import com.minhph091.estateportal.dto.CategoryRequest;
+import com.minhph091.estateportal.dto.CategoryResponse;
 import com.minhph091.estateportal.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +21,13 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public List<CategoryDTO> getAllCategories() {
+    public List<CategoryResponse> getAllCategories() {
         return categoryService.getAllCategories();
+    }
+
+    @PostMapping("/categories")
+    public ResponseEntity<CategoryResponse> addCategory(@RequestBody @Valid CategoryRequest request) {
+        CategoryResponse response = categoryService.addCategory(request);
+        return ResponseEntity.ok().body(response);
     }
 }

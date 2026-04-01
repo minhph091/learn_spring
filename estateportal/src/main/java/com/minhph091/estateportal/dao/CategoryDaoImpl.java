@@ -17,8 +17,9 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public void addCategory(Category category) {
+    public Category addCategory(Category category) {
         entityManager.persist(category);
+        return category;
     }
 
     @Override

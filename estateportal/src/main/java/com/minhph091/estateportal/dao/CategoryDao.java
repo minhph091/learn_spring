@@ -5,7 +5,7 @@ import com.minhph091.estateportal.entity.Category;
 import java.util.List;
 
 public interface CategoryDao {
-    void addCategory(Category category);
+    Category addCategory(Category category);
 
     List<Category> getCategories();
 

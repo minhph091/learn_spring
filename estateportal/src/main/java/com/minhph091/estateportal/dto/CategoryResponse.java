@@ -1,16 +1,11 @@
 package com.minhph091.estateportal.dto;
 
-public class CategoryDTO {
+public class CategoryResponse {
     private int id;
     private String name;
 
-    public CategoryDTO() {
+    public CategoryResponse() {
 
-    }
-
-    public CategoryDTO(int id, String name) {
-        this.id = id;
-        this.name = name;
     }
 
     public int getId() {

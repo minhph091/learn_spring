@@ -1,7 +1,8 @@
 package com.minhph091.estateportal.service;
 
 import com.minhph091.estateportal.dao.CategoryDao;
-import com.minhph091.estateportal.dto.CategoryDTO;
+import com.minhph091.estateportal.dto.CategoryRequest;
+import com.minhph091.estateportal.dto.CategoryResponse;
 import com.minhph091.estateportal.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,19 +19,38 @@ public class CategoryService {
     public CategoryService(CategoryDao categoryDao) {
         this.categoryDao = categoryDao;
     }
+
     @Transactional(readOnly = true)
-    public List<CategoryDTO> getAllCategories() {
+    public List<CategoryResponse> getAllCategories() {
         List<Category> categories = categoryDao.getCategories();
-        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        List<CategoryResponse> categoryRequestList = new ArrayList<>();
         for (Category category : categories) {
-            categoryDTOList.add(mapToDTO(category));
+            categoryRequestList.add(mapToResponse(category));
         }
-        return categoryDTOList;
+        return categoryRequestList;
     }
 
-    public CategoryDTO mapToDTO(Category category) {
-        CategoryDTO categoryDao = new CategoryDTO();
-        categoryDao.setId(category.getCategoryID());
+    @Transactional
+    public CategoryResponse addCategory(CategoryRequest categoryRequest) {
+        Category category = categoryDao.addCategory(mapToEntity(categoryRequest));
+        return mapToResponse(category);
+    }
+
+    public Category mapToEntity(CategoryRequest categoryRequest) {
+        Category category = new Category();
+        category.setName(categoryRequest.getName());
+        return category;
+    }
+
+    public CategoryResponse mapToResponse(Category category) {
+        CategoryResponse response = new CategoryResponse();
+        response.setId(category.getCategoryID());
+        response.setName(category.getName());
+        return response;
+    }
+
+    public CategoryRequest mapToDTO(Category category) {
+        CategoryRequest categoryDao = new CategoryRequest();
         categoryDao.setName(category.getName());
         return categoryDao;
     }
