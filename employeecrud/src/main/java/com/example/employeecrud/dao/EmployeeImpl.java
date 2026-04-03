@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.example.employeecrud.entity.Employee;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,15 +34,14 @@ public class EmployeeImpl implements EmployeeDao {
     }
 
     @Override
-    public void updateEmployee(Employee employee) {
-        entityManager.merge(employee);
+    public Employee updateEmployee(Employee employee) {
+        return entityManager.merge(employee);
     }
 
     @Override
     public void deleteEmployee(int id) {
         Employee employee = entityManager.find(Employee.class, id);
-        if (employee != null) {
-            entityManager.remove(employee);
-        }
+        entityManager.remove(employee);
+
     }
 }
